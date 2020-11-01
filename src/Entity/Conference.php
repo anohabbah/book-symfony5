@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ConferenceRepository::class)
+ * @ORM\Table(name="conferences")
  */
 class Conference
 {
