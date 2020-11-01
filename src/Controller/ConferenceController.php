@@ -11,8 +11,8 @@ class ConferenceController extends AbstractController
 {
     /**
      * @Route("/", name="home_page")
-     * @param Request $request
-     * @return Response
+     * @param Request $request The upcoming request
+     * @return Response The ongoing response
      */
     public function index(Request $request): Response
     {
@@ -20,6 +20,7 @@ class ConferenceController extends AbstractController
         if ($name = $request->query->get('hello')) {
             $greet = sprintf('<h1>Hello %s !</h1>', htmlspecialchars($name));
         }
+
         return new Response(<<<EOF
 <html>
     <body>
