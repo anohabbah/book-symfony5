@@ -3,12 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\CommentRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=CommentRepository::class)
  * @ORM\Table(name="comments")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Comment
 {
@@ -106,6 +108,14 @@ class Comment
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setCreatedAtValue(): void
+    {
+        $this->createdAt = new DateTime();
     }
 
     public function getConference(): ?Conference
