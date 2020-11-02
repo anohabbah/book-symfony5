@@ -14,6 +14,16 @@ use Twig\Environment;
 class ConferencesController extends AbstractController
 {
     /**
+     * @var Environment
+     */
+    private $twig;
+
+    public function __construct(Environment $twig)
+    {
+        $this->twig = $twig;
+    }
+
+    /**
      * @Route("/", name="home_page")
      *
      * @param Environment          $twig       Twig environment
@@ -21,9 +31,9 @@ class ConferencesController extends AbstractController
      *
      * @return Response The ongoing response
      */
-    public function index(Environment $twig, ConferenceRepository $repository): Response
+    public function index(ConferenceRepository $repository): Response
     {
-        return new Response($twig->render('conferences/index.html.twig', [
+        return new Response($this->twig->render('conferences/index.html.twig', [
             'conferences' => $repository->findAll(),
         ]));
     }
@@ -32,7 +42,6 @@ class ConferencesController extends AbstractController
      * @Route("/conferences/{id}", name="conference.show")
      *
      * @param Request           $request           Request
-     * @param Environment       $twig              Twig environment
      * @param Conference        $conference        Conference to show
      * @param CommentRepository $commentRepository Comment repository
      *
@@ -40,14 +49,13 @@ class ConferencesController extends AbstractController
      */
     public function show(
         Request $request,
-        Environment $twig,
         Conference $conference,
         CommentRepository $commentRepository
     ): Response {
         $offset = max(0, $request->query->getInt('offset', 0));
         $paginator = $commentRepository->getCommentPaginator($conference, $offset);
 
-        return new Response($twig->render('conferences/show.html.twig', [
+        return new Response($this->twig->render('conferences/show.html.twig', [
             'conference' => $conference,
             'comments' => $paginator,
             'previous' => $offset - CommentRepository::ITEMS_PER_PAGE,
