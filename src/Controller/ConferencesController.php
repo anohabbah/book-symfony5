@@ -26,7 +26,6 @@ class ConferencesController extends AbstractController
     /**
      * @Route("/", name="home_page")
      *
-     * @param Environment          $twig       Twig environment
      * @param ConferenceRepository $repository Conference Repository
      *
      * @return Response The ongoing response
@@ -41,21 +40,24 @@ class ConferencesController extends AbstractController
     /**
      * @Route("/conferences/{id}", name="conference.show")
      *
-     * @param Request           $request           Request
-     * @param Conference        $conference        Conference to show
-     * @param CommentRepository $commentRepository Comment repository
+     * @param Request              $request              Request
+     * @param Conference           $conference           Conference to show
+     * @param CommentRepository    $commentRepository    Comment repository
+     * @param ConferenceRepository $conferenceRepository Conference repository
      *
      * @return Response Outgoing response
      */
     public function show(
         Request $request,
         Conference $conference,
-        CommentRepository $commentRepository
+        CommentRepository $commentRepository,
+        ConferenceRepository $conferenceRepository
     ): Response {
         $offset = max(0, $request->query->getInt('offset', 0));
         $paginator = $commentRepository->getCommentPaginator($conference, $offset);
 
         return new Response($this->twig->render('conferences/show.html.twig', [
+            'conferences' => $conferenceRepository->findAll(),
             'conference' => $conference,
             'comments' => $paginator,
             'previous' => $offset - CommentRepository::ITEMS_PER_PAGE,
