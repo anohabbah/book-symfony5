@@ -51,6 +51,7 @@ class ConferencesController extends AbstractController
      * @param Request           $request           Request
      * @param Conference        $conference        Conference to show
      * @param CommentRepository $commentRepository Comment repository
+     * @param string            $photoDir          Directory where to upload files
      *
      * @return Response Outgoing response
      */
