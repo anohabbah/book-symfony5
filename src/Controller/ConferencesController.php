@@ -57,7 +57,8 @@ class ConferencesController extends AbstractController
     public function show(
         Request $request,
         Conference $conference,
-        CommentRepository $commentRepository
+        CommentRepository $commentRepository,
+        string $photoDir
     ): Response {
         $comment = new Comment();
         $form = $this->createForm(CommentFormType::class, $comment);
@@ -65,6 +66,16 @@ class ConferencesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setConference($conference);
+
+            if ($photo = $form['photo']->getData()) {
+                try {
+                    $filename = bin2hex(random_bytes(6)).'.'.$photo->getExtension();
+                    $photo->move($photoDir, $filename);
+                    $comment->setPhotoFilename($filename);
+                } catch (\Exception $e) {
+                    // unable to upload the photo, give up
+                }
+            }
 
             $this->entityManager->persist($comment);
             $this->entityManager->flush();
