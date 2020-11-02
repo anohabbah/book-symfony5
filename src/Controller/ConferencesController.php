@@ -38,7 +38,7 @@ class ConferencesController extends AbstractController
     }
 
     /**
-     * @Route("/conferences/{id}", name="conference.show")
+     * @Route("/conferences/{slug}", name="conference.show")
      *
      * @param Request           $request           Request
      * @param Conference        $conference        Conference to show
