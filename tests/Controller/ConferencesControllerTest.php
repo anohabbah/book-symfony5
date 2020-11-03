@@ -2,14 +2,14 @@
 
 namespace App\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Panther\PantherTestCase;
 
-class ConferencesControllerTest extends WebTestCase
+class ConferencesControllerTest extends PantherTestCase
 {
     /** @test */
     public function index(): void
     {
-        $client = static::createClient();
+        $client = static::createPantherClient(['external_base_uri' => $_SERVER['SYMFONY_PROJECT_DEFAULT_ROUTE_URL']]);
         $client->request('GET', '/');
 
         self::assertResponseIsSuccessful();
@@ -26,7 +26,7 @@ class ConferencesControllerTest extends WebTestCase
             'comment_form[text]' => 'Some feedback from an automated functional test',
             'comment_form[email]' => 'me@automat.ed',
             'comment_form[photo]' => dirname(__DIR__, 2).'/public/images/test.jpg',
-            ]);
+        ]);
         self::assertResponseRedirects();
         $client->followRedirect();
         self::assertSelectorExists('div:contains("There are 2 comments")');
