@@ -41,8 +41,18 @@ class AppFixtures extends Fixture
             ->setPhotoFilename('photo.png')
             ->setAuthor('Fabien')
             ->setEmail('fabien@example.com')
+            ->setState('published')
             ->setText('This was a great conference.');
         $manager->persist($comment1);
+
+        $comment2 = (new Comment())
+            ->setConference($amsterdam)
+            ->setPhotoFilename('photo.jpg')
+            ->setAuthor('Lucas')
+            ->setEmail('lucas@example.com')
+            ->setState('published')
+            ->setText('I think this one is going to be moderated.c');
+        $manager->persist($comment2);
 
         $admin = (new Admin())
             ->setRoles(['ROLE_ADMIN'])
