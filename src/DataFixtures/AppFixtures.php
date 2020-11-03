@@ -2,14 +2,27 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Admin;
 use App\Entity\Comment;
 use App\Entity\Conference;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 class AppFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+
+    /**
+     * @var EncoderFactoryInterface
+     */
+    private $encoderFactory;
+
+    public function __construct(EncoderFactoryInterface $encoderFactory)
+    {
+        $this->encoderFactory = $encoderFactory;
+    }
+
+    public function load(ObjectManager $manager): void
     {
         $amsterdam = (new Conference())
             ->setCity('Amsterdam')
@@ -29,6 +42,12 @@ class AppFixtures extends Fixture
             ->setEmail('fabien@example.com')
             ->setText('This was a great conference.');
         $manager->persist($comment1);
+
+        $admin = (new Admin())
+            ->setRoles(['ROLE_ADMIN'])
+            ->setUsername('admin')
+            ->setPassword($this->encoderFactory->getEncoder(Admin::class)->encodePassword('admin', null));
+        $manager->persist($admin);
 
         $manager->flush();
     }
