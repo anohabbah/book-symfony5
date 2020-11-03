@@ -3,15 +3,15 @@ name: app
 type: php:7.4
 
 runtime:
-    extensions:
-        - apcu
-        - mbstring
-        - sodium
-        - ctype
-        - iconv
-        - pdo_pgsql
-        - redis
-        - amqp
+  extensions:
+    - apcu
+    - mbstring
+    - sodium
+    - ctype
+    - iconv
+    - pdo_pgsql
+    - redis
+    - amqp
 
 
 #variables:
@@ -20,36 +20,45 @@ runtime:
 #        #opcache.preload: /app/config/preload.php
 
 build:
-    flavor: none
+  flavor: none
 
 disk: 512
 
 web:
-    locations:
-        "/":
-            root: "public"
-            expires: 1h
-            passthru: "/index.php"
+  locations:
+    "/":
+      root: "public"
+      expires: 1h
+      passthru: "/index.php"
 
 mounts:
-    "/var": { source: local, source_path: var }
-    "public/uploads": { source: local, source_path: uploads }
+  "/var": { source: local, source_path: var }
+  "public/uploads": { source: local, source_path: uploads }
 
 hooks:
-    build: |
-        set -x -e
+  build: |
+    set -x -e
 
-        curl -s https://get.symfony.com/cloud/configurator | (>&2 bash)
+    curl -s https://get.symfony.com/cloud/configurator | (>&2 bash)
 
-        (>&2 symfony-build)
+    (>&2 symfony-build)
 
-    deploy: |
-        set -x -e
+  deploy: |
+    set -x -e
 
-        (>&2 symfony-deploy)
+    (>&2 symfony-deploy)
 
 
 relationships:
-    database: "db:postgresql"
-    redis: "rediscache:redis"
-    rabbitmq: "queue:rabbitmq"
+  database: "db:postgresql"
+  redis: "rediscache:redis"
+  rabbitmq: "queue:rabbitmq"
+
+workers:
+  messages:
+  commands:
+  start: |
+    set -x -e
+
+    (>&2 symfony-deploy)
+    php bin/console messenger:consume async -vv --time-limit=3600 --memory-limit=128M
