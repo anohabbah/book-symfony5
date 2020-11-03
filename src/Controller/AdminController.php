@@ -16,11 +16,6 @@ use Twig\Environment;
 class AdminController extends AbstractController
 {
     /**
-     * @var Environment
-     */
-    private $twig;
-
-    /**
      * @var EntityManagerInterface
      */
     private $entityManager;
@@ -30,9 +25,8 @@ class AdminController extends AbstractController
      */
     private $bus;
 
-    public function __construct(Environment $twig, EntityManagerInterface $entityManager, MessageBusInterface $bus)
+    public function __construct(EntityManagerInterface $entityManager, MessageBusInterface $bus)
     {
-        $this->twig = $twig;
         $this->entityManager = $entityManager;
         $this->bus = $bus;
     }
