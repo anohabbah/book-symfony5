@@ -53,7 +53,7 @@ class Comment
     private $conference;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $photoFilename;
 
