@@ -11,6 +11,7 @@ runtime:
         - iconv
         - pdo_pgsql
         - redis
+        - amqp
 
 
 #variables:
@@ -49,5 +50,6 @@ hooks:
 
 
 relationships:
-    database: db:postgresql
-    redis: rediscache:redis
+    database: "db:postgresql"
+    redis: "rediscache:redis"
+    rabbitmq: "queue:rabbitmq"

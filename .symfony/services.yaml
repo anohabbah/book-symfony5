@@ -5,3 +5,8 @@ db:
 
 rediscache:
   type: redis:latest
+
+queue:
+  type: rabbitmq:3.7
+  disk: 1024
+  size: S
