@@ -5,9 +5,16 @@ framework:
 
     transports:
       # https://symfony.com/doc/current/messenger.html#transport-configuration
-      # async: '%env(MESSENGER_TRANSPORT_DSN)%'
-      # failed: 'doctrine://default?queue_name=failed'
-      async: '%env(RABBITMQ_DSN)%'
+      async:
+        dsn: '%env(RABBITMQ_DSN)%'
+        retry_strategy:
+          max_retries: 3
+          multiplier: 2
+      failed: 'doctrine://default?queue_name=failed'
+      # sync: 'sync://'
+
+    failure_transport: failed
 
     routing:
-      App\Message\CommentMessage: async
+      # Route your messages to the transports
+      'App\Message\CommentMEssage': async
