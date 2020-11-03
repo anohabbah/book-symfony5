@@ -38,6 +38,7 @@ class AppFixtures extends Fixture
 
         $comment1 = (new Comment())
             ->setConference($amsterdam)
+            ->setPhotoFilename('photo.png')
             ->setAuthor('Fabien')
             ->setEmail('fabien@example.com')
             ->setText('This was a great conference.');
