@@ -12,6 +12,7 @@ use Symfony\Bridge\Twig\Mime\NotificationEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Workflow\WorkflowInterface;
 
 class CommentMessageHandler implements MessageHandlerInterface
@@ -55,14 +56,21 @@ class CommentMessageHandler implements MessageHandlerInterface
      * @var string
      */
     private $adminEmail;
+
     /**
      * @var ImageOptimizer
      */
     private $imageOptimizer;
+
     /**
      * @var string
      */
     private $photoDir;
+
+    /**
+     * @var NotifierInterface
+     */
+    private $notifier;
 
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -70,9 +78,8 @@ class CommentMessageHandler implements MessageHandlerInterface
         CommentRepository $commentRepository,
         MessageBusInterface $bus,
         WorkflowInterface $commentStateMachine,
-        MailerInterface $mailer,
+        NotifierInterface $notifier,
         ImageOptimizer $imageOptimizer,
-        string $adminEmail,
         string $photoDir,
         LoggerInterface $logger = null
     ) {
@@ -82,10 +89,9 @@ class CommentMessageHandler implements MessageHandlerInterface
         $this->bus = $bus;
         $this->workflow = $commentStateMachine;
         $this->logger = $logger;
-        $this->mailer = $mailer;
-        $this->adminEmail = $adminEmail;
         $this->imageOptimizer = $imageOptimizer;
         $this->photoDir = $photoDir;
+        $this->notifier = $notifier;
     }
 
     public function __invoke(CommentMessage $message)
@@ -112,12 +118,7 @@ class CommentMessageHandler implements MessageHandlerInterface
             $this->bus->dispatch($message);
         } elseif ($this->workflow->can($comment, 'publish')
             || $this->workflow->can($comment, 'publish_ham')) {
-            $this->mailer->send((new NotificationEmail())
-                ->subject('New comment posted')
-                ->htmlTemplate('emails/comment_notification.html.twig')
-                ->from($this->adminEmail)->to($this->adminEmail)
-                ->context(['comment' => $comment])
-            );
+            $this->notifier->send(new App\Notification\CommentReviewNotification($comment), ...$this->notifier->getAdminRecipients());
         } elseif ($this->workflow->can($comment, 'optimize')) {
             if ($comment->getPhotoFilename()) {
                 $this->imageOptimizer->resize($this->photoDir.'/'.$comment->getPhotoFilename());
