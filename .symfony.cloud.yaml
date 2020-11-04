@@ -12,7 +12,7 @@ runtime:
     - pdo_pgsql
     - redis
     - amqp
-
+    - xsl
 
 #variables:
 #    php:
