@@ -13,6 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 
@@ -87,6 +89,7 @@ class ConferencesController extends AbstractController
         Request $request,
         Conference $conference,
         CommentRepository $commentRepository,
+        NotifierInterface $notifier,
         string $photoDir
     ): Response {
         $comment = new Comment();
@@ -121,8 +124,20 @@ class ConferencesController extends AbstractController
             return $this->redirectToRoute('conference.show', ['slug' => $conference->getSlug()]);
         }
 
+        if ($form->isSubmitted()) {
+            $notifier->send(new Notification(
+                'Can you check your submission ? There are some problems with it.',
+                ['browser']
+            ));
+        }
+
         $offset = max(0, $request->query->getInt('offset', 0));
         $paginator = $commentRepository->getCommentPaginator($conference, $offset);
+
+        $notifier->send(new Notification(
+            'Thank you  for your feedback. Your comment will be posted after moderation',
+            ['browser']
+        ));
 
         return new Response($this->twig->render('conferences/show.html.twig', [
             'conference' => $conference,
