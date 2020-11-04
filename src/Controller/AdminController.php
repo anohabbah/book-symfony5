@@ -8,10 +8,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Workflow\Registry;
-use Twig\Environment;
 
 class AdminController extends AbstractController
 {
@@ -64,5 +64,25 @@ class AdminController extends AbstractController
             'transition' => $transition,
             'comment' => $comment,
         ]);
+    }
+
+    /**
+     * @Route("/admin/http-cache/{uri<.*>}", methods={"PURGE"})
+     *
+     * @param KernelInterface $kernel  Http kernel
+     * @param Request         $request Incoming request
+     * @param string          $uri     URI
+     */
+    public function purgeHttpCache(KernelInterface $kernel, Request $request, string $uri): Response
+    {
+        if ('prod' === $kernel->getEnvironment()) {
+            return new Response('KO', 400);
+        }
+
+        $store = (new class($kernel) extends HttpCache {
+        })->getStore();
+        $store->purge($request->getSchemeAndHttpHost().'/'.$uri);
+
+        return new Response('Done');
     }
 }
