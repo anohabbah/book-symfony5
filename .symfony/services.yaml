@@ -1,5 +1,5 @@
 db:
-  type: postgresql:lastest
+  type: postgresql:latest
   disk: 1024
   size: S
 
@@ -10,3 +10,12 @@ queue:
   type: rabbitmq:3.7
   disk: 1024
   size: S
+
+varnish:
+  type: varnish:latest
+  relationships:
+    application: 'app.http'
+  configuration:
+    vcl: !include
+      type: string
+      path: config.vcl
