@@ -16,6 +16,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 
 class ConferencesController extends AbstractController
@@ -81,6 +82,7 @@ class ConferencesController extends AbstractController
      * @param Request           $request           Request
      * @param Conference        $conference        Conference to show
      * @param CommentRepository $commentRepository Comment repository
+     * @param NotifierInterface $notifier          Message notifier
      * @param string            $photoDir          Directory where to upload files
      *
      * @return Response Outgoing response
@@ -119,7 +121,12 @@ class ConferencesController extends AbstractController
                 'permalink' => $request->getUri(),
             ];
 
-            $this->bus->dispatch(new CommentMessage($comment->getId(), $context));
+            $reviewURL = $this->generateUrl(
+                'comments.review',
+                ['id' => $comment->getId()],
+                UrlGeneratorInterface::ABSOLUTE_PATH
+            );
+            $this->bus->dispatch(new CommentMessage($comment->getId(), $reviewURL, $context));
 
             return $this->redirectToRoute('conference.show', ['slug' => $conference->getSlug()]);
         }
