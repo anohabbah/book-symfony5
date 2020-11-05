@@ -10,6 +10,7 @@ use App\Repository\CommentRepository;
 use App\Repository\ConferenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -43,7 +44,15 @@ class ConferencesController extends AbstractController
     }
 
     /**
-     * @Route("/", name="home_page")
+     * @Route("/")
+     * @return RedirectResponse
+     */
+    public function indexNoLocale(): Response
+    {
+        return $this->redirectToRoute('home_page', ['_locale' => 'en']);
+    }
+    /**
+     * @Route("/{_locale<%app.supported_locales%>}", name="home_page")
      *
      * @param ConferenceRepository $repository Conference Repository
      *
@@ -60,7 +69,7 @@ class ConferencesController extends AbstractController
     }
 
     /**
-     * @Route("/conference_header", name="conferences.header")
+     * @Route("/{_locale<%app.supported_locales%}/conference_header", name="conferences.header")
      *
      * @param ConferenceRepository $conferenceRepository Conference repository
      */
@@ -77,7 +86,7 @@ class ConferencesController extends AbstractController
     }
 
     /**
-     * @Route("/conferences/{slug}", name="conference.show")
+     * @Route("/{_locale<%app.supported_locales%}/conferences/{slug}", name="conference.show")
      *
      * @param Request           $request           Request
      * @param Conference        $conference        Conference to show
