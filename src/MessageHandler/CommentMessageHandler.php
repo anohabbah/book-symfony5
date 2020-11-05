@@ -4,6 +4,7 @@ namespace App\MessageHandler;
 
 use App\ImageOptimizer;
 use App\Message\CommentMessage;
+use App\Notification\CommentReviewNotification;
 use App\Repository\CommentRepository;
 use App\SpamChecker;
 use Doctrine\ORM\EntityManagerInterface;
@@ -118,7 +119,7 @@ class CommentMessageHandler implements MessageHandlerInterface
             $this->bus->dispatch($message);
         } elseif ($this->workflow->can($comment, 'publish')
             || $this->workflow->can($comment, 'publish_ham')) {
-            $this->notifier->send(new App\Notification\CommentReviewNotification($comment), ...$this->notifier->getAdminRecipients());
+            $this->notifier->send(new CommentReviewNotification($comment), ...$this->notifier->getAdminRecipients());
         } elseif ($this->workflow->can($comment, 'optimize')) {
             if ($comment->getPhotoFilename()) {
                 $this->imageOptimizer->resize($this->photoDir.'/'.$comment->getPhotoFilename());

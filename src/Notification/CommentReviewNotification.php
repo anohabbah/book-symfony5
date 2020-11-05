@@ -17,6 +17,7 @@ class CommentReviewNotification extends Notification implements EmailNotificatio
 
     /**
      * CommentReviewNotification constructor.
+     * @param Comment $comment Comment posted
      */
     public function __construct(Comment $comment)
     {
@@ -29,7 +30,7 @@ class CommentReviewNotification extends Notification implements EmailNotificatio
     {
         $message = EmailMessage::fromNotification($this, $recipient, $transport);
         $message->getMessage()
-            ->htmlTemplate('emails/comment_notification.html.twig')
+            ->htmlTemplate('emails/comments/notification.html.twig')
             ->context(['comment' => $this->comment])
         ;
 
