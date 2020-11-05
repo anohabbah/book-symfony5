@@ -1,6 +1,7 @@
-name: app
+name: spa
 
 type: php:7.4
+size: S
 
 runtime:
   extensions:
@@ -19,16 +20,26 @@ runtime:
 #        # uncomment on PHP 7.4+
 #        #opcache.preload: /app/config/preload.php
 
+dependencies:
+  nodejs:
+    yarn: "*"
+
 build:
   flavor: none
 
 disk: 512
 
 web:
+  commands:
+    start: sleep
   locations:
     "/":
       root: "public"
-      expires: 1h
+      index:
+        - index.html
+        - index.php
+      expires: 10m
+      scripts: false
       passthru: "/index.php"
 
 mounts:
@@ -40,6 +51,9 @@ hooks:
     set -x -e
 
     curl -s https://get.symfony.com/cloud/configurator | (>&2 bash)
+    yarn-install
+    npm rebuild node-sass
+    yarn encore prod
 
     (>&2 symfony-build)
 
@@ -62,7 +76,6 @@ crons:
     if [ "$SYMFONY_BRANCH" = "master" ]; then
       croncape symfony console app:comment:cleanup
     fi
-
 
 workers:
   messages:
