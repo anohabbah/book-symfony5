@@ -69,7 +69,7 @@ class ConferencesController extends AbstractController
     }
 
     /**
-     * @Route("/{_locale<%app.supported_locales%}/conference_header", name="conferences.header")
+     * @Route("/{_locale<%app.supported_locales%>}/conference_header", name="conferences.header")
      *
      * @param ConferenceRepository $conferenceRepository Conference repository
      */
@@ -86,7 +86,7 @@ class ConferencesController extends AbstractController
     }
 
     /**
-     * @Route("/{_locale<%app.supported_locales%}/conferences/{slug}", name="conference.show")
+     * @Route("/{_locale<%app.supported_locales%>}/conferences/{slug}", name="conference.show")
      *
      * @param Request           $request           Request
      * @param Conference        $conference        Conference to show
