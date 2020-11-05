@@ -14,7 +14,7 @@ class FilterPublishedCommentQueryException implements QueryCollectionExtensionIn
         string $resourceClass, string $operationName = null): void
     {
         if (Comment::class === $resourceClass) {
-            $queryBuilder->andWhere(sprintf("%s.sate = 'published'", $queryBuilder->getRootAliases()[0]));
+            $queryBuilder->andWhere(sprintf("%s.state = 'published'", $queryBuilder->getRootAliases()[0]));
         }
     }
 
