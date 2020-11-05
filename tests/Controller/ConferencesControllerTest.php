@@ -12,7 +12,7 @@ class ConferencesControllerTest extends PantherTestCase
     public function index(): void
     {
         $client = static::createPantherClient(['external_base_uri' => $_SERVER['SYMFONY_PROJECT_DEFAULT_ROUTE_URL']]);
-        $client->request('GET', '/');
+        $client->request('GET', '/en');
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h2', 'Give your feedback!');
@@ -22,7 +22,7 @@ class ConferencesControllerTest extends PantherTestCase
     public function it_test_comment_submission(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/conferences/amsterdam-2019');
+        $client->request('GET', '/en/conferences/amsterdam-2019');
         $client->submitForm('Submit', [
             'comment_form[author]' => 'Fabien',
             'comment_form[text]' => 'Some feedback from an automated functional test',
@@ -43,7 +43,7 @@ class ConferencesControllerTest extends PantherTestCase
     public function testConferencePage(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/');
+        $crawler = $client->request('GET', '/en');
 
         self::assertCount(2, $crawler->filter('h4'));
 
@@ -52,13 +52,13 @@ class ConferencesControllerTest extends PantherTestCase
         self::assertPageTitleContains('Amsterdam');
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h2', 'Amsterdam 2019');
-        self::assertSelectorExists('div:contains("There are 1 comments")');
+        self::assertSelectorExists('div:contains("There are 1 comment")');
     }
 
     public function testMailerAssertions(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/');
+        $client->request('GET', '/en');
         self::assertEmailCount(1);
         $event = self::getMailerEvent(0);
         self::assertEmailIsQueued($event);

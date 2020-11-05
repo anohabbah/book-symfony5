@@ -51,8 +51,9 @@ class ConferencesController extends AbstractController
     {
         return $this->redirectToRoute('home_page', ['_locale' => 'en']);
     }
+
     /**
-     * @Route("/{_locale<%app.supported_locales%>}", name="home_page")
+     * @Route("/{_locale}", name="home_page", requirements={"_locale": "%app.supported_locales%"})
      *
      * @param ConferenceRepository $repository Conference Repository
      *
@@ -69,7 +70,11 @@ class ConferencesController extends AbstractController
     }
 
     /**
-     * @Route("/{_locale<%app.supported_locales%>}/conference_header", name="conferences.header")
+     * @Route(
+     *     "/{_locale}/conference_header",
+     *     name="conferences.header",
+     *     requirements={"_locale": "%app.supported_locales%"}
+     * )
      *
      * @param ConferenceRepository $conferenceRepository Conference repository
      */
@@ -86,7 +91,11 @@ class ConferencesController extends AbstractController
     }
 
     /**
-     * @Route("/{_locale<%app.supported_locales%>}/conferences/{slug}", name="conference.show")
+     * @Route(
+     *     "/{_locale}/conferences/{slug}",
+     *     name="conference.show",
+     *     requirements={"_locale": "%app.supported_locales%"}
+     * )
      *
      * @param Request           $request           Request
      * @param Conference        $conference        Conference to show
