@@ -51,7 +51,7 @@ class AppFixtures extends Fixture
             ->setAuthor('Lucas')
             ->setEmail('lucas@example.com')
             ->setState('published')
-            ->setText('I think this one is going to be moderated.c');
+            ->setText('I think this one is going to be moderated.');
         $manager->persist($comment2);
 
         $admin = (new Admin())
