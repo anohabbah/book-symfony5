@@ -12,5 +12,16 @@
     "html-webpack-plugin": "^4.5.0",
     "preact": "^10.5.5",
     "preact-router": "^3.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-loader": "^3.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-preact": "^0.1.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "node-sass": "^4",
+    "sass-loader": "^9.0"
   }
 }
