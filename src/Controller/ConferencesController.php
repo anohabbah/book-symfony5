@@ -128,6 +128,11 @@ class ConferencesController extends AbstractController
             );
             $this->bus->dispatch(new CommentMessage($comment->getId(), $reviewURL, $context));
 
+            $notifier->send(new Notification(
+                'Thank you  for your feedback. Your comment will be posted after moderation',
+                ['browser']
+            ));
+
             return $this->redirectToRoute('conference.show', ['slug' => $conference->getSlug()]);
         }
 
@@ -140,11 +145,6 @@ class ConferencesController extends AbstractController
 
         $offset = max(0, $request->query->getInt('offset', 0));
         $paginator = $commentRepository->getCommentPaginator($conference, $offset);
-
-        $notifier->send(new Notification(
-            'Thank you  for your feedback. Your comment will be posted after moderation',
-            ['browser']
-        ));
 
         return new Response($this->twig->render('conferences/show.html.twig', [
             'conference' => $conference,
